@@ -1,0 +1,29 @@
+https://tbr.otbbookings.co.za/wp-content/uploads/2024/10/the-blue-room-seating-plan-191024.png
+
+https://tbr.otbbookings.co.za/wp-json/timetics/v1/bookings?stopToast=true
+payload:
+{
+    "first_name": "wadawd",
+    "email": "dawdwadwa@e.cwda",
+    "custom_form_data": {
+        "phone_number": "wadwa"
+    },
+    "timezone": "Asia/Karachi",
+    "staff": 17,
+    "appointment": 21,
+    "date": "2024-11-28",
+    "start_date": "2024-11-28",
+    "start_time": "20:00",
+    "end_time": "9:00 pm",
+    "booking_createAt": "November 24, 2024 6:06 PM",
+    "seats": [
+        1544
+    ],
+    "payment_method": "woocommerce",
+    "order_total": 200,
+    "location_type": "in-person-meeting",
+    "location": "103B Bree St, Cape Town City Centre, Cape Town, 8001",
+    "guests": []
+}
+
+https://tbr.otbbookings.co.za/checkout/
