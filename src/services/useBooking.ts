@@ -1,4 +1,4 @@
-// https://tbr.otbbookings.co.za/wp-json/timetics/v1/bookings?stopToast=true
+// https://tbr.otbbookings.co.za/wp-json/timetics/v1/bookings
 
 // import { useQuery } from "react-query";
 import {
@@ -12,7 +12,7 @@ import { BookingPayload, BookingResponse } from "../types/types";
 //  return useQuery<BookingResponse[]>(
 //   "bookings",
 //   async () => {
-//    const response = await apiClient.get<BookingResponse[]>("/bookings?stopToast=true");
+//    const response = await apiClient.get<BookingResponse[]>("/bookings");
 //    return response.data;
 //   },
 //   {
@@ -22,18 +22,18 @@ import { BookingPayload, BookingResponse } from "../types/types";
 //  );
 // };
 
-export const useCreateBooking = () => {
+export const useCreateBooking = (settledFn: () => void) => {
  // const queryClient = useQueryClient();
 
  return useMutation<BookingResponse, unknown, BookingPayload>(
   async bookingPayload => {
-   const response = await apiClient.post<BookingResponse>("/bookings?stopToast=true", bookingPayload);
+   const response = await apiClient.post<BookingResponse>("/bookings", bookingPayload);
    return response.data;
   },
-  // {
-  //  onSuccess: () => {
-  //   queryClient.invalidateQueries("bookings");
-  //  },
-  // },
+  {
+   onSettled: () => {
+    settledFn();
+   },
+  },
  );
 };

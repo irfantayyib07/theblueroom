@@ -10,10 +10,7 @@ export enum AppointmentType {
  Meeting = "meeting",
 }
 
-export enum LocationType {
- InPersonMeeting = "in-person-meeting",
- Online = "online",
-}
+export type LocationType = "in-person-meeting" | "online";
 
 // Reusable Types
 export type TimeSlot = { start: string; end: string };
@@ -135,6 +132,7 @@ export type SettingsResponse = {
 
 export type BookingPayload = {
  first_name: string;
+ description: string;
  email: string;
  custom_form_data: {
   phone_number: string;
@@ -233,7 +231,7 @@ export type Appointment = {
  description: string; // Description of the appointment
  type: string; // Type of appointment (e.g., "seat")
  locations: {
-  location_type: string;
+  location_type: LocationType;
   location: string;
  }[]; // Appointment locations
  schedule: {

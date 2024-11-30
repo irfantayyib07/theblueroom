@@ -5,6 +5,7 @@ import BookingForm from "./BookingForm";
 import BookingDetails from "./BookingDetails";
 import { useAppointments } from "@/services/useAppointments";
 import { Appointment } from "@/types/types";
+import OverlayLoader from "@/components/common/overlay-loader";
 
 const bookingSchema = z.object({
  customerName: z
@@ -14,30 +15,31 @@ const bookingSchema = z.object({
  customerEmail: z.string().email({ message: "Please enter a valid email address" }),
  customerPhone: z
   .string()
-  .min(10, { message: "Phone number must be at least 10 digits" })
-  .max(15, { message: "Phone number must not exceed 15 digits" })
-  .regex(/^\+?[1-9]\d{1,14}$/, { message: "Please enter a valid phone number" }), // Optional: E.164 format
+  .regex(/^\+([1-9]{1,4})\d{7,14}$/, { message: "Please enter a valid phone number with country code" }),
  description: z.string().max(400, { message: "Phone number must not exceed 400 digits" }),
- timeZone: z.string().min(1, { message: "Please select a time zone" }),
- meeting: z.string().min(1, { message: "Please select a meeting type" }),
- teamMember: z
-  .string()
-  .optional()
-  .refine(val => val === undefined || val.length > 0, { message: "Please select a team member" }),
- location: z
-  .string()
-  .optional()
-  .refine(val => val === undefined || val.length > 0, { message: "Please select a location" }),
- date: z.date().optional(),
- time: z.string().optional(),
- status: z.string().optional(),
- seats: z.array(z.number()).optional(),
+ date: z.date({
+  required_error: "Booking date is required",
+  invalid_type_error: "Please provide a valid date",
+ }),
+ time: z.string().min(1, { message: "Time slot is required" }),
+ seats: z.array(z.number()).min(1, "You must select at least one seat"),
+ // timeZone: z.string().min(1, { message: "Please select a time zone" }),
+ // meeting: z.string().min(1, { message: "Please select a meeting type" }),
+ // teamMember: z
+ //  .string()
+ //  .optional()
+ //  .refine(val => val === undefined || val.length > 0, { message: "Please select a team member" }),
+ // location: z
+ //  .string()
+ //  .optional()
+ //  .refine(val => val === undefined || val.length > 0, { message: "Please select a location" }),
+ // status: z.string().optional(),
 });
 
 export type BookingFormData = z.infer<typeof bookingSchema>;
 
 function BookingPage() {
- const { data } = useAppointments();
+ const { data, isLoading } = useAppointments();
  console.log(data?.data);
 
  const methods = useForm<BookingFormData>({
@@ -45,14 +47,22 @@ function BookingPage() {
   defaultValues: {
    customerName: "",
    customerEmail: "",
-   timeZone: "",
-   meeting: "",
-   teamMember: "",
-   location: "",
-   status: "",
+   customerPhone: "",
+   description: "",
+   date: undefined,
+   time: "",
    seats: [],
+   // timeZone: "",
+   // meeting: "",
+   // teamMember: "",
+   // location: "",
+   // status: "",
   },
  });
+
+ if (isLoading) {
+  return <OverlayLoader />;
+ }
 
  return (
   <FormProvider {...methods}>

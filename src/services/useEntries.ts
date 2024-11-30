@@ -1,4 +1,4 @@
-// https://tbr.otbbookings.co.za/wp-json/timetics/v1/bookings/entries?staff_id=17&meeting_id=21&start_date=2024-11-26&end_date=2024-11-26&timezone=Asia/Karachi
+// https://tbr.otbbookings.co.za/wp-json/timetics/v1/bookings/entries?staff_id=23&meeting_id=21&start_date=2024-11-26&end_date=2024-11-26&timezone=Asia/Karachi
 
 import { useQuery } from "react-query";
 import apiClient from "./apiClient";
@@ -7,12 +7,13 @@ import { EntriesResponse } from "../types/types";
 export const useEntries = (
  startDate: string,
  endDate: string,
+ successFn?: (data: EntriesResponse) => void,
  meetingId: number = 21,
- staffId: number = 17,
- timeZone: string = "Asia/Karachi",
+ staffId: number = 23,
+ timeZone: string = "Africa/Johannesburg",
 ) => {
  return useQuery<EntriesResponse | undefined>(
-  "entries",
+  ["entries", startDate, endDate],
   async () => {
    const params = new URLSearchParams();
 
@@ -28,8 +29,13 @@ export const useEntries = (
    return response.data;
   },
   {
-   staleTime: 1000 * 60 * 5, // Cache for 5 minutes
-   cacheTime: 1000 * 60 * 10, // Keep in cache for 10 minutes
+   refetchOnWindowFocus: true,
+   enabled: startDate && endDate ? true : false,
+   onSuccess: data => {
+    if (successFn && data) {
+     successFn(data);
+    }
+   },
   },
  );
 };
