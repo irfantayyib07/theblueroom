@@ -23,24 +23,12 @@ const bookingSchema = z.object({
  }),
  time: z.string().min(1, { message: "Time slot is required" }),
  seats: z.array(z.number()).min(1, "You must select at least one seat"),
- // timeZone: z.string().min(1, { message: "Please select a time zone" }),
- // meeting: z.string().min(1, { message: "Please select a meeting type" }),
- // teamMember: z
- //  .string()
- //  .optional()
- //  .refine(val => val === undefined || val.length > 0, { message: "Please select a team member" }),
- // location: z
- //  .string()
- //  .optional()
- //  .refine(val => val === undefined || val.length > 0, { message: "Please select a location" }),
- // status: z.string().optional(),
 });
 
 export type BookingFormData = z.infer<typeof bookingSchema>;
 
 function BookingPage() {
  const { data, isLoading } = useAppointments();
- console.log("Appointment: ", data?.data);
 
  const methods = useForm<BookingFormData>({
   resolver: zodResolver(bookingSchema),
@@ -52,11 +40,6 @@ function BookingPage() {
    date: undefined,
    time: "",
    seats: [],
-   // timeZone: "",
-   // meeting: "",
-   // teamMember: "",
-   // location: "",
-   // status: "",
   },
  });
 

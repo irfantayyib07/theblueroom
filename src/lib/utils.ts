@@ -65,29 +65,3 @@ export function getBookingCreateAt() {
 
  return now.toLocaleString("en-US", options).replace("at ", "");
 }
-
-// console.log({
-//  first_name: formData?.customerName,
-//  email: formData?.customerEmail,
-//  custom_form_data: {
-//   phone_number: formData?.customerPhone,
-//  },
-//  description: formData?.description,
-//  timezone: "Asia/Karachi",
-//  staff: 23,
-//  appointment: 21,
-//  date: format(new Date(), "yyyy-MM-dd"),
-//  start_date: format(formData?.date, "yyyy-MM-dd"),
-//  start_time: formData?.time,
-//  end_time: getEndTime(formData.time, data.duration),
-//  booking_createAt: getBookingCreateAt(),
-//  seats: formData?.seats,
-//  payment_method: "woocommerce",
-//  order_total: formData?.seats.reduce((total, seatId) => {
-//   const seat = data?.seat_plan.find(seat => seat.id === seatId);
-//   return total + (seat ? parseFloat(seat.price) : 0);
-//  }, 0),
-//  location_type: data?.locations?.[0]?.location_type,
-//  location: data?.locations?.[0]?.location,
-//  guests: [],
-// });

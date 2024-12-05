@@ -1,7 +1,7 @@
 // src/hooks/useOrders.ts
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { wooApiClient } from "./apiClient";
-import { WooOrder, WooOrderPayload } from "@/types/types";
+import { WooOrder, WooOrderPayload, WooOrderResponse } from "@/types/types";
 
 // Fetch Orders
 export const useOrders = (params = {}) => {
@@ -37,15 +37,16 @@ export const useOrder = (orderId?: number) => {
 export const useCreateOrder = () => {
  const queryClient = useQueryClient();
 
- return useMutation<WooOrder, unknown, WooOrderPayload>(
+ return useMutation<WooOrderResponse, unknown, WooOrderPayload>(
   async orderPayload => {
    const response = await wooApiClient.post("orders", orderPayload);
    return response.data;
   },
   {
-   onSuccess: () => {
+   onSuccess: (data: WooOrderResponse) => {
     // Invalidate and refetch orders list
     queryClient.invalidateQueries("woocommerce-orders");
+    window.location.href = data?.payment_url;
    },
   },
  );

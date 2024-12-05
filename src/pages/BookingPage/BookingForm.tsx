@@ -19,7 +19,14 @@ import { useCreateBooking } from "@/services/useBooking";
 import { useCreateOrder } from "@/services/useOrder";
 
 const BookingForm = ({ data }: { data: Appointment }) => {
- const { control, watch, reset, setValue, handleSubmit } = useFormContext<BookingFormData>();
+ const {
+  control,
+  watch,
+  reset,
+  setValue,
+  formState: { errors },
+  handleSubmit,
+ } = useFormContext<BookingFormData>();
  const [availableTimeSlots, setAvailableTimeSlots] = useState<Slot[]>([]);
 
  const formData = watch();
@@ -36,9 +43,8 @@ const BookingForm = ({ data }: { data: Appointment }) => {
  const { isLoading } = useEntries(dateString, dateString, handleEntriesSuccess);
  const { mutate: createOrder, isLoading: isCreatingOrder } = useCreateOrder();
  const { mutate: createBooking, isLoading: isBooking } = useCreateBooking((data: BookingResponse) => {
-  console.log("Create Booking Response: ", data);
   createOrder({
-   customer_id: +data?.data?.customer?.id,
+   customer_id: 23,
    payment_method: "payfast",
    payment_method_title: "Payfast",
    set_paid: false,
@@ -55,7 +61,7 @@ const BookingForm = ({ data }: { data: Appointment }) => {
     {
      product_id: 25,
      quantity: 1,
-     price: +data?.data?.order_total,
+     total: data?.data?.order_total,
     },
    ],
    meta_data: [
@@ -191,86 +197,59 @@ const BookingForm = ({ data }: { data: Appointment }) => {
       />
      )}
 
-     <Controller
-      name="customerName"
-      control={control}
-      render={({ field: { value, onChange }, fieldState: { error } }) => (
-       <FormItem>
-        <FormLabel className="text-sm">
-         Name <span className="text-red-500">*</span>
-        </FormLabel>
-        <FormControl>
-         <Input
-          placeholder="Enter customer name"
-          value={value}
-          onChange={e => onChange(e.target.value)}
-          className={error ? "border-red-500" : ""}
-         />
-        </FormControl>
-        <FormMessage>{error?.message}</FormMessage>
-       </FormItem>
-      )}
-     />
+     <FormItem>
+      <FormLabel className="text-sm">
+       Name <span className="text-red-500">*</span>
+      </FormLabel>
+      <FormControl>
+       <Input
+        {...control.register("customerName")}
+        placeholder="Enter customer name"
+        className={errors.customerName ? "border-red-500" : ""}
+       />
+      </FormControl>
+      {errors.customerName && <FormMessage>{errors.customerName.message}</FormMessage>}
+     </FormItem>
 
-     <Controller
-      name="customerEmail"
-      control={control}
-      render={({ field: { value, onChange }, fieldState: { error } }) => (
-       <FormItem>
-        <FormLabel className="text-sm">
-         Email <span className="text-red-500">*</span>
-        </FormLabel>
-        <FormControl>
-         <Input
-          placeholder="Enter email address"
-          value={value}
-          onChange={e => onChange(e.target.value)}
-          className={error ? "border-red-500" : ""}
-         />
-        </FormControl>
-        <FormMessage>{error?.message}</FormMessage>
-       </FormItem>
-      )}
-     />
+     <FormItem>
+      <FormLabel className="text-sm">
+       Email <span className="text-red-500">*</span>
+      </FormLabel>
+      <FormControl>
+       <Input
+        {...control.register("customerEmail")}
+        placeholder="Enter email address"
+        className={errors.customerEmail ? "border-red-500" : ""}
+       />
+      </FormControl>
+      {errors.customerEmail && <FormMessage>{errors.customerEmail.message}</FormMessage>}
+     </FormItem>
 
-     <Controller
-      name="customerPhone"
-      control={control}
-      render={({ field: { value, onChange }, fieldState: { error } }) => (
-       <FormItem>
-        <FormLabel className="text-sm">
-         Phone <span className="text-red-500">*</span>
-        </FormLabel>
-        <FormControl>
-         <Input
-          placeholder="Enter phone"
-          value={value}
-          onChange={e => onChange(e.target.value)}
-          className={error ? "border-red-500" : ""}
-         />
-        </FormControl>
-        <FormMessage>{error?.message}</FormMessage>
-       </FormItem>
-      )}
-     />
-     <Controller
-      name="description"
-      control={control}
-      render={({ field: { value, onChange }, fieldState: { error } }) => (
-       <FormItem>
-        <FormLabel className="text-sm">Description</FormLabel>
-        <FormControl>
-         <Textarea
-          placeholder="Enter description"
-          value={value}
-          onChange={e => onChange(e.target.value)}
-          className={error ? "border-red-500" : ""}
-         />
-        </FormControl>
-        <FormMessage>{error?.message}</FormMessage>
-       </FormItem>
-      )}
-     />
+     <FormItem>
+      <FormLabel className="text-sm">
+       Phone <span className="text-red-500">*</span>
+      </FormLabel>
+      <FormControl>
+       <Input
+        {...control.register("customerPhone")}
+        placeholder="Enter phone"
+        className={errors.customerPhone ? "border-red-500" : ""}
+       />
+      </FormControl>
+      {errors.customerPhone && <FormMessage>{errors.customerPhone.message}</FormMessage>}
+     </FormItem>
+
+     <FormItem>
+      <FormLabel className="text-sm">Description</FormLabel>
+      <FormControl>
+       <Textarea
+        {...control.register("description")}
+        placeholder="Enter description"
+        className={errors.description ? "border-red-500" : ""}
+       />
+      </FormControl>
+      {errors.description && <FormMessage>{errors.description.message}</FormMessage>}
+     </FormItem>
      <Button type="submit" className="w-full" disabled={isPending}>
       {isPending ? (
        <>
