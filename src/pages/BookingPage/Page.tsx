@@ -40,7 +40,7 @@ export type BookingFormData = z.infer<typeof bookingSchema>;
 
 function BookingPage() {
  const { data, isLoading } = useAppointments();
- console.log(data?.data);
+ console.log("Appointment: ", data?.data);
 
  const methods = useForm<BookingFormData>({
   resolver: zodResolver(bookingSchema),

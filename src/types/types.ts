@@ -321,3 +321,102 @@ export type AppointmentsResponse = {
  message: string;
  data: Appointment;
 };
+
+export type AddToCartPayload = {
+ booking_id: number;
+ meeting_id: number;
+ price: number;
+ checkout_url: string;
+ cancel_url: string;
+};
+
+export type AddToCartResponse = {
+ success: number;
+ status_code: number;
+ data: {
+  checkout_url: string;
+  booking_id: number;
+  meeting_id: number;
+  price: number;
+ };
+};
+
+// src/types/woocommerce.ts
+export interface WooOrder {
+ id: number;
+ parent_id: number;
+ status: "pending" | "processing" | "on-hold" | "completed" | "cancelled" | "refunded" | "failed";
+ currency: string;
+ date_created: string;
+ total: string;
+ customer_id: number;
+ order_key?: string;
+ billing: {
+  first_name: string;
+  last_name: string;
+  company?: string;
+  address_1: string;
+  address_2?: string;
+  city: string;
+  state: string;
+  postcode: string;
+  country: string;
+  email: string;
+  phone: string;
+ };
+ shipping: {
+  first_name: string;
+  last_name: string;
+  company?: string;
+  address_1: string;
+  address_2?: string;
+  city: string;
+  state: string;
+  postcode: string;
+  country: string;
+  phone?: string;
+ };
+ payment_method?: string;
+ payment_method_title?: string;
+ line_items: Array<{
+  id?: number;
+  name: string;
+  product_id: number;
+  variation_id?: number;
+  quantity: number;
+  price: number;
+  subtotal?: string;
+  total?: string;
+ }>;
+}
+
+export interface WooOrderPayload {
+ // Core order details
+ status?: WooOrder["status"];
+ customer_id?: number;
+
+ // Payment information
+ payment_method?: string;
+ payment_method_title?: string;
+ transaction_id?: string;
+ set_paid?: boolean;
+
+ // Billing and shipping details
+ billing?: Partial<WooOrder["billing"]>;
+ shipping?: Partial<WooOrder["shipping"]>;
+
+ // Line items (products in the order)
+ line_items: Array<{
+  product_id: number;
+  variation_id?: number;
+  quantity: number;
+  price: number;
+ }>;
+
+ // Optional additional fields
+ customer_note?: string;
+ meta_data?: Array<{
+  key: string;
+  value: string | number | boolean;
+ }>;
+}

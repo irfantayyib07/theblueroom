@@ -10,12 +10,13 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn, convertTo24HourFormat, getBookingCreateAt, getEndTime, isDayDisabled } from "@/lib/utils";
 import { FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import type { BookingFormData } from "./Page";
-import { Appointment, EntriesResponse, Slot } from "@/types/types";
+import { Appointment, BookingResponse, EntriesResponse, Slot } from "@/types/types";
 import SeatPlan from "./SeatPlan";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useEntries } from "@/services/useEntries";
 import { useCreateBooking } from "@/services/useBooking";
+import { useCreateOrder } from "@/services/useOrder";
 
 const BookingForm = ({ data }: { data: Appointment }) => {
  const { control, watch, reset, setValue, handleSubmit } = useFormContext<BookingFormData>();
@@ -29,12 +30,41 @@ const BookingForm = ({ data }: { data: Appointment }) => {
    slot.start_time = convertTo24HourFormat(slot?.start_time);
    return slot;
   });
-  console.log(data?.data?.days?.[0].slots, formattedSlots);
   setAvailableTimeSlots(formattedSlots || []);
  };
 
  const { isLoading } = useEntries(dateString, dateString, handleEntriesSuccess);
- const { mutate: createBooking, isLoading: isBooking } = useCreateBooking(() => {
+ const { mutate: createOrder, isLoading: isCreatingOrder } = useCreateOrder();
+ const { mutate: createBooking, isLoading: isBooking } = useCreateBooking((data: BookingResponse) => {
+  console.log("Create Booking Response: ", data);
+  createOrder({
+   customer_id: +data?.data?.customer?.id,
+   payment_method: "payfast",
+   payment_method_title: "Payfast",
+   set_paid: false,
+   billing: {
+    first_name: data?.data?.customer?.first_name,
+    last_name: data?.data?.customer?.last_name || "",
+    email: data?.data?.customer?.email,
+   },
+   shipping: {
+    first_name: data?.data?.customer?.first_name,
+    last_name: data?.data?.customer?.last_name || "",
+   },
+   line_items: [
+    {
+     product_id: 25,
+     quantity: 1,
+     price: +data?.data?.order_total,
+    },
+   ],
+   meta_data: [
+    {
+     key: "custom_note",
+     value: "Additional order information",
+    },
+   ],
+  });
   reset();
  });
 
@@ -65,6 +95,8 @@ const BookingForm = ({ data }: { data: Appointment }) => {
    guests: [],
   });
  };
+
+ const isPending = isCreatingOrder || isBooking;
 
  return (
   <Card className="w-full min-w-[500px] max-w-7xl flex-[3]">
@@ -239,8 +271,8 @@ const BookingForm = ({ data }: { data: Appointment }) => {
        </FormItem>
       )}
      />
-     <Button type="submit" className="w-full" disabled={isBooking}>
-      {isBooking ? (
+     <Button type="submit" className="w-full" disabled={isPending}>
+      {isPending ? (
        <>
         <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Processing...
        </>
