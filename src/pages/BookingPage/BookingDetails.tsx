@@ -3,8 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CalendarIcon, CheckCheck, DollarSign, MapPinIcon, TicketCheck, TicketIcon } from "lucide-react";
 import type { BookingFormData } from "./Page";
 import { Separator } from "@/components/ui/separator";
-import { format } from "date-fns";
+import { format, getDay } from "date-fns";
 import { Appointment } from "@/types/types";
+import { PRICING_DATA } from "@/data";
 
 const BookingDetails = ({ data }: { data: Appointment }) => {
  const { watch } = useFormContext<BookingFormData>();
@@ -94,7 +95,11 @@ const BookingDetails = ({ data }: { data: Appointment }) => {
       <div className="font-semibold">Total Price:</div>
      </div>
      <div className="mt-4 space-y-3">
-      R{selectedSeats.reduce((acc, seat): number => acc + +seat.price, 0)}
+      R
+      {selectedSeats.reduce(
+       (acc, seat): number => acc + PRICING_DATA[getDay(formData.date)][seat.ticketType],
+       0,
+      )}
      </div>
     </div>
 

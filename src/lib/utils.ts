@@ -16,6 +16,16 @@ export const isDayDisabled = (data: Appointment, date: Date) => {
  return !data.schedule?.[23]?.[dayOfWeek]?.length || date < today;
 };
 
+export const getAvailableDays = (data: Appointment) => {
+ return dayMap.reduce<number[]>((availableIndexes, day, index) => {
+  const availableSlots = data.schedule?.[23]?.[day]?.length || 0;
+  if (availableSlots > 0) {
+   availableIndexes.push(index);
+  }
+  return availableIndexes;
+ }, []);
+};
+
 export const convertTo24HourFormat = (time: string) => {
  const parsedTime = parse(time, "h:mma", new Date());
  return format(parsedTime, "HH:mm");

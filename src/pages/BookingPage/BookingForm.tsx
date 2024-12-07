@@ -1,13 +1,20 @@
 import { useState } from "react";
 import { useFormContext, Controller } from "react-hook-form";
-import { format } from "date-fns";
+import { format, getDay } from "date-fns";
 import { Calendar as CalendarIcon, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { cn, convertTo24HourFormat, getBookingCreateAt, getEndTime, isDayDisabled } from "@/lib/utils";
+import {
+ cn,
+ convertTo24HourFormat,
+ getAvailableDays,
+ getBookingCreateAt,
+ getEndTime,
+ isDayDisabled,
+} from "@/lib/utils";
 import { FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import type { BookingFormData } from "./Page";
 import { Appointment, BookingResponse, EntriesResponse, Slot } from "@/types/types";
@@ -17,6 +24,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useEntries } from "@/services/useEntries";
 import { useCreateBooking } from "@/services/useBooking";
 import { useCreateOrder } from "@/services/useOrder";
+import { PRICING_DATA } from "@/data";
 
 const BookingForm = ({ data }: { data: Appointment }) => {
  const {
@@ -94,7 +102,7 @@ const BookingForm = ({ data }: { data: Appointment }) => {
    payment_method: "woocommerce",
    order_total: formData?.seats.reduce((total, seatId) => {
     const seat = data?.seat_plan.find(seat => seat.id === seatId);
-    return total + (seat ? parseFloat(seat.price) : 0);
+    return total + (seat ? PRICING_DATA[getDay(formData.date)][seat.ticketType] : 0);
    }, 0),
    location_type: data?.locations?.[0]?.location_type,
    location: data?.locations?.[0]?.location,
@@ -105,7 +113,7 @@ const BookingForm = ({ data }: { data: Appointment }) => {
  const isPending = isCreatingOrder || isBooking;
 
  return (
-  <Card className="w-full min-w-[500px] max-w-7xl flex-[3]">
+  <Card className="w-full min-w-[500px] flex-[3]">
    <form onSubmit={handleSubmit(onSubmit)}>
     <CardContent className="pt-6 space-y-6">
      <div className="grid grid-cols-2 gap-4">
@@ -192,6 +200,7 @@ const BookingForm = ({ data }: { data: Appointment }) => {
       <SeatPlan
        seats={data?.seat_plan}
        slot={availableTimeSlots.find(slot => slot.start_time === formData?.time) || ({} as Slot)}
+       availableDays={getAvailableDays(data)}
        bgImage={data?.seat_plan_settings?.canvasBgImage}
        canvasDimensions={data?.seat_plan_settings?.canvasDimensions}
       />
