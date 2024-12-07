@@ -1,6 +1,6 @@
 import { useFormContext } from "react-hook-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CalendarIcon, CheckCheck, DollarSign, MapPinIcon, TicketCheck, TicketIcon } from "lucide-react";
+import { CalendarIcon, CheckCheck, DollarSign, MapPinIcon, TicketCheck } from "lucide-react";
 import type { BookingFormData } from "./Page";
 import { Separator } from "@/components/ui/separator";
 import { format, getDay } from "date-fns";
