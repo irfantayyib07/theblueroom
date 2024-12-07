@@ -43,7 +43,7 @@ const BookingDetails = ({ data }: { data: Appointment }) => {
     <Separator />
 
     {/* Ticket Price Section */}
-    <div>
+    {/* <div>
      <div className="flex items-start space-x-3">
       <TicketIcon className="h-5 w-5 text-blue-600 mt-0.5" />
       <div className="font-semibold">Ticket Price:</div>
@@ -57,9 +57,9 @@ const BookingDetails = ({ data }: { data: Appointment }) => {
        );
       })}
      </div>
-    </div>
+    </div> */}
 
-    <Separator />
+    {/* <Separator /> */}
 
     {/* Selected Seats Section */}
     <div>
