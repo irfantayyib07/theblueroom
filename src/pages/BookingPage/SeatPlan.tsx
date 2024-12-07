@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { Seat, Slot } from "@/types/types";
@@ -16,6 +16,45 @@ type CanvasProps = {
  negativeSizeFactor?: number;
 };
 
+const useWindowSize = () => {
+ const [windowSize, setWindowSize] = useState({
+  width: typeof window !== "undefined" ? window.innerWidth : 1200,
+  height: typeof window !== "undefined" ? window.innerHeight : 800,
+ });
+
+ useEffect(() => {
+  const handleResize = () => {
+   setWindowSize({
+    width: window.innerWidth,
+    height: window.innerHeight,
+   });
+  };
+
+  window.addEventListener("resize", handleResize);
+
+  return () => window.removeEventListener("resize", handleResize);
+ }, []);
+
+ return windowSize;
+};
+
+const calculateResponsiveScaling = (
+ originalDimension: number,
+ windowWidth: number,
+ breakpoints = {
+  sm: 640,
+  md: 768,
+  lg: 1024,
+  xl: 1280,
+ },
+) => {
+ if (windowWidth >= breakpoints.xl) return originalDimension;
+ if (windowWidth >= breakpoints.lg) return originalDimension * 0.9;
+ if (windowWidth >= breakpoints.md) return originalDimension * 0.8;
+ if (windowWidth >= breakpoints.sm) return originalDimension * 0.7;
+ return originalDimension * 0.6;
+};
+
 const SeatPlan: React.FC<CanvasProps> = ({
  seats = [],
  slot,
@@ -30,6 +69,16 @@ const SeatPlan: React.FC<CanvasProps> = ({
   formState: { errors },
  } = useFormContext<BookingFormData>();
  const selectedSeats = getValues("seats") || [];
+ const windowSize = useWindowSize();
+
+ const responsiveWidth = calculateResponsiveScaling(
+  canvasDimensions.width / negativeSizeFactor,
+  windowSize.width,
+ );
+ const responsiveHeight = calculateResponsiveScaling(
+  canvasDimensions.height / negativeSizeFactor,
+  windowSize.width,
+ );
 
  const toggleSeatSelection = (seatId: number) => {
   const updatedSeats = selectedSeats.includes(seatId)
@@ -50,21 +99,30 @@ const SeatPlan: React.FC<CanvasProps> = ({
     <div
      className="relative min-h-96 w-fit rounded-lg overflow-hidden"
      style={{
-      width: `${canvasDimensions.width / negativeSizeFactor}px`,
-      height: `${canvasDimensions.height / negativeSizeFactor}px`,
+      width: `${responsiveWidth}px`,
+      height: `${responsiveHeight}px`,
      }}
     >
      {/* Background Image */}
-     <img src={bgImage} alt="Seating Plan" className="absolute top-0 left-0 object-cover" />
+     <img
+      src={bgImage}
+      alt="Seating Plan"
+      className="absolute top-0 left-0 object-cover"
+      style={{
+       width: `${responsiveWidth}px`,
+       height: `${responsiveHeight}px`,
+      }}
+     />
      {/* Seats */}
      {seats.map(seat => {
-      const seatTop = parseFloat(seat.positionY) / negativeSizeFactor;
-      const seatLeft = parseFloat(seat.positionX) / negativeSizeFactor;
-      const seatWidth = +seat.width / negativeSizeFactor;
-      const seatHeight = +seat.height / negativeSizeFactor;
+      const scaleFactor = responsiveWidth / (canvasDimensions.width / negativeSizeFactor);
+      const seatTop = (parseFloat(seat.positionY) / negativeSizeFactor) * scaleFactor;
+      const seatLeft = (parseFloat(seat.positionX) / negativeSizeFactor) * scaleFactor;
+      const seatWidth = (+seat.width / negativeSizeFactor) * scaleFactor;
+      const seatHeight = (+seat.height / negativeSizeFactor) * scaleFactor;
+
       return (
        <React.Fragment key={seat.id}>
-        {/* Seat Circle */}
         <div
          onClick={
           Object.values(slot?.seats || {}).includes(seat.id) ? () => {} : () => toggleSeatSelection(seat.id)
@@ -78,7 +136,6 @@ const SeatPlan: React.FC<CanvasProps> = ({
           left: `${seatLeft}px`,
           width: `${seatWidth}px`,
           height: `${seatHeight}px`,
-          // transform: `scale(${seat.zoomX}, ${seat.zoomY})`,
           backgroundColor: Object.values(slot?.seats || {}).includes(seat.id)
            ? "gray"
            : selectedSeats.includes(seat.id)
@@ -119,7 +176,6 @@ const SeatPlan: React.FC<CanvasProps> = ({
           </TooltipTrigger>
          </Tooltip>
         </div>
-        {/* Tooltip */}
        </React.Fragment>
       );
      })}

@@ -113,15 +113,15 @@ const BookingForm = ({ data }: { data: Appointment }) => {
  const isPending = isCreatingOrder || isBooking;
 
  return (
-  <Card className="w-full min-w-[500px] flex-[3]">
+  <Card className="w-full flex-[3]">
    <form onSubmit={handleSubmit(onSubmit)}>
     <CardContent className="pt-6 space-y-6">
-     <div className="grid grid-cols-2 gap-4">
+     <div className="flex flex-wrap gap-4">
       <Controller
        name="date"
        control={control}
        render={({ field: { value, onChange }, fieldState: { error } }) => (
-        <FormItem>
+        <FormItem className="basis-full sm:basis-[unset] sm:flex-1">
          <FormLabel className="text-sm">
           Select Date <span className="text-red-500">*</span>
          </FormLabel>
@@ -163,7 +163,7 @@ const BookingForm = ({ data }: { data: Appointment }) => {
        name="time"
        control={control}
        render={({ field: { value, onChange }, fieldState: { error } }) => (
-        <FormItem>
+        <FormItem className="basis-full sm:basis-[unset] sm:flex-1">
          <FormLabel className="text-sm">
           Select Time <span className="text-red-500">*</span>
          </FormLabel>

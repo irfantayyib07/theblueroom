@@ -12,42 +12,44 @@ const TicketPricingTable = ({ availableDays }: { availableDays: number[] }) => {
  const currentDayIndex = date ? getDay(new Date(date)) : null;
 
  return (
-  <div className="space-y-3 min-w-[450px] grow">
-   <h2 className="text-sm">Weekly Ticket Type Pricing</h2>
+  <div className="space-y-3 w-full sm:w-auto grow">
+   <h2 className="text-sm font-semibold">Weekly Ticket Type Pricing</h2>
    <Card>
     <CardContent className="p-0">
-     <Table>
-      <TableHeader>
-       <TableRow>
-        <TableHead className="w-[100px]">Day</TableHead>
-        <TableHead className="text-center">Type A</TableHead>
-        <TableHead className="text-center">Type B</TableHead>
-        <TableHead className="text-center">Type C</TableHead>
-       </TableRow>
-      </TableHeader>
-      <TableBody>
-       {Object.entries(PRICING_DATA).map(([dayIndex, prices]) => (
-        <TableRow
-         key={dayIndex}
-         className={cn(
-          "hover:bg-accent hover:text-accent-foreground",
-          currentDayIndex === +dayIndex && "bg-primary/10",
-         )}
-        >
-         <TableCell className="font-medium">{DAY_NAMES[dayIndex]}</TableCell>
-         <TableCell className="text-center">
-          {availableDays.includes(+dayIndex) ? `$${prices.A}` : "-"}
-         </TableCell>
-         <TableCell className="text-center">
-          {availableDays.includes(+dayIndex) ? `$${prices.B}` : "-"}
-         </TableCell>
-         <TableCell className="text-center">
-          {availableDays.includes(+dayIndex) ? `$${prices.C}` : "-"}
-         </TableCell>
+     <div className="overflow-x-auto">
+      <Table className="w-full">
+       <TableHeader>
+        <TableRow>
+         <TableHead className="w-[100px]">Day</TableHead>
+         <TableHead className="whitespace-nowrap text-center">Type A</TableHead>
+         <TableHead className="whitespace-nowrap text-center">Type B</TableHead>
+         <TableHead className="whitespace-nowrap text-center">Type C</TableHead>
         </TableRow>
-       ))}
-      </TableBody>
-     </Table>
+       </TableHeader>
+       <TableBody>
+        {Object.entries(PRICING_DATA).map(([dayIndex, prices]) => (
+         <TableRow
+          key={dayIndex}
+          className={cn(
+           "hover:bg-accent hover:text-accent-foreground",
+           currentDayIndex === +dayIndex && "bg-primary/10",
+          )}
+         >
+          <TableCell className="font-medium">{DAY_NAMES[dayIndex]}</TableCell>
+          <TableCell className="text-center">
+           {availableDays.includes(+dayIndex) ? `$${prices.A}` : "-"}
+          </TableCell>
+          <TableCell className="text-center">
+           {availableDays.includes(+dayIndex) ? `$${prices.B}` : "-"}
+          </TableCell>
+          <TableCell className="text-center">
+           {availableDays.includes(+dayIndex) ? `$${prices.C}` : "-"}
+          </TableCell>
+         </TableRow>
+        ))}
+       </TableBody>
+      </Table>
+     </div>
     </CardContent>
    </Card>
   </div>

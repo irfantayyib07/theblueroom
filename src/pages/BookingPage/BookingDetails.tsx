@@ -32,7 +32,7 @@ const BookingDetails = ({ data }: { data: Appointment }) => {
  const selectedSeats = data?.seat_plan?.filter(seat => formData?.seats?.includes(seat.id)) || [];
 
  return (
-  <Card className="w-full min-w-[280px] bg-white flex-1">
+  <Card className="w-full min-w-[260px] bg-white flex-1">
    <CardHeader>
     <CardTitle className="text-xl font-bold">{data?.name}</CardTitle>
    </CardHeader>
