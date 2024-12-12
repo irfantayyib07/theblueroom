@@ -30,7 +30,7 @@ const FormStepThree = ({
     <FormControl>
      <Input
       {...control.register("customerName")}
-      placeholder="Enter customer name"
+      placeholder="Enter your name"
       className={errors.customerName ? "border-red-500" : ""}
       disabled={isBooking || isCreatingOrder}
      />
@@ -45,7 +45,7 @@ const FormStepThree = ({
     <FormControl>
      <Input
       {...control.register("customerEmail")}
-      placeholder="Enter email address"
+      placeholder="Enter your e-mail"
       className={errors.customerEmail ? "border-red-500" : ""}
       disabled={isBooking || isCreatingOrder}
      />
@@ -60,7 +60,7 @@ const FormStepThree = ({
     <FormControl>
      <Input
       {...control.register("customerPhone")}
-      placeholder="Enter phone"
+      placeholder="Enter your phone number"
       className={errors.customerPhone ? "border-red-500" : ""}
       disabled={isBooking || isCreatingOrder}
      />
@@ -73,7 +73,7 @@ const FormStepThree = ({
     <FormControl>
      <Textarea
       {...control.register("description")}
-      placeholder="Enter description"
+      placeholder="Please share anything that will help us prepare for the meeting"
       className={errors.description ? "border-red-500" : ""}
       disabled={isBooking || isCreatingOrder}
      />
