@@ -7,14 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent } from "@/components/ui/card";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import {
- cn,
- convertTo24HourFormat,
- getAvailableDays,
- getBookingCreateAt,
- getEndTime,
- isDayDisabled,
-} from "@/lib/utils";
+import { cn, convertTo24HourFormat, getBookingCreateAt, getEndTime, isDayDisabled } from "@/lib/utils";
 import { FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import type { BookingFormData } from "./Page";
 import { Appointment, BookingResponse, EntriesResponse, Slot } from "@/types/types";
@@ -49,7 +42,7 @@ const BookingForm = ({ data }: { data: Appointment }) => {
  };
 
  const { isLoading } = useEntries(dateString, dateString, handleEntriesSuccess);
- const { mutate: createOrder, isLoading: isCreatingOrder } = useCreateOrder();
+ const { mutate: createOrder, isLoading: isCreatingOrder } = useCreateOrder(() => {});
  const { mutate: createBooking, isLoading: isBooking } = useCreateBooking((data: BookingResponse) => {
   createOrder({
    customer_id: 23,
@@ -200,7 +193,6 @@ const BookingForm = ({ data }: { data: Appointment }) => {
       <SeatPlan
        seats={data?.seat_plan}
        slot={availableTimeSlots.find(slot => slot.start_time === formData?.time) || ({} as Slot)}
-       availableDays={getAvailableDays(data)}
        bgImage={data?.seat_plan_settings?.canvasBgImage}
        canvasDimensions={data?.seat_plan_settings?.canvasDimensions}
       />

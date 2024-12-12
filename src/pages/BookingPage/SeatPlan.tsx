@@ -5,12 +5,10 @@ import { Seat, Slot } from "@/types/types";
 import { useFormContext } from "react-hook-form";
 import { Check } from "lucide-react";
 import { BookingFormData } from "./Page";
-import TicketPricingTable from "./TicketPricingTable";
 
 type CanvasProps = {
  seats: Seat[];
  slot: Slot;
- availableDays: number[];
  bgImage: string;
  canvasDimensions: { width: number; height: number };
  negativeSizeFactor?: number;
@@ -48,7 +46,7 @@ const calculateResponsiveScaling = (
   xl: 1280,
  },
 ) => {
- if (windowWidth >= breakpoints.xl) return originalDimension;
+ if (windowWidth >= breakpoints.xl) return originalDimension * 1.1;
  if (windowWidth >= breakpoints.lg) return originalDimension * 0.9;
  if (windowWidth >= breakpoints.md) return originalDimension * 0.8;
  if (windowWidth >= breakpoints.sm) return originalDimension * 0.7;
@@ -58,7 +56,6 @@ const calculateResponsiveScaling = (
 const SeatPlan: React.FC<CanvasProps> = ({
  seats = [],
  slot,
- availableDays,
  bgImage = "",
  canvasDimensions = { width: 0, height: 0 },
  negativeSizeFactor = 1.5,
@@ -88,100 +85,97 @@ const SeatPlan: React.FC<CanvasProps> = ({
  };
 
  return (
-  <div className="flex flex-wrap items-start gap-4">
-   <div className="space-y-2">
-    <label className="text-sm">
-     Select Seats <span className="text-red-500">*</span>
-    </label>
-    {errors.seats && errors.seats.message && (
-     <p className="text-sm text-red-500 mt-2">{errors.seats.message}</p>
-    )}
-    <div
-     className="relative min-h-96 w-fit rounded-lg overflow-hidden"
+  <div className="space-y-2">
+   <label className="text-sm">
+    Select Seats <span className="text-red-500">*</span>
+   </label>
+   {errors.seats && errors.seats.message && (
+    <p className="text-sm text-red-500 mt-2">{errors.seats.message}</p>
+   )}
+   <div
+    className="relative min-h-96 w-fit rounded-lg overflow-hidden"
+    style={{
+     width: `${responsiveWidth}px`,
+     height: `${responsiveHeight}px`,
+    }}
+   >
+    {/* Background Image */}
+    <img
+     src={bgImage}
+     alt="Seating Plan"
+     className="absolute top-0 left-0 object-cover"
      style={{
       width: `${responsiveWidth}px`,
       height: `${responsiveHeight}px`,
      }}
-    >
-     {/* Background Image */}
-     <img
-      src={bgImage}
-      alt="Seating Plan"
-      className="absolute top-0 left-0 object-cover"
-      style={{
-       width: `${responsiveWidth}px`,
-       height: `${responsiveHeight}px`,
-      }}
-     />
-     {/* Seats */}
-     {seats.map(seat => {
-      const scaleFactor = responsiveWidth / (canvasDimensions.width / negativeSizeFactor);
-      const seatTop = (parseFloat(seat.positionY) / negativeSizeFactor) * scaleFactor;
-      const seatLeft = (parseFloat(seat.positionX) / negativeSizeFactor) * scaleFactor;
-      const seatWidth = (+seat.width / negativeSizeFactor) * scaleFactor;
-      const seatHeight = (+seat.height / negativeSizeFactor) * scaleFactor;
+    />
+    {/* Seats */}
+    {seats.map(seat => {
+     const scaleFactor = responsiveWidth / (canvasDimensions.width / negativeSizeFactor);
+     const seatTop = (parseFloat(seat.positionY) / negativeSizeFactor) * scaleFactor;
+     const seatLeft = (parseFloat(seat.positionX) / negativeSizeFactor) * scaleFactor;
+     const seatWidth = (+seat.width / negativeSizeFactor) * scaleFactor;
+     const seatHeight = (+seat.height / negativeSizeFactor) * scaleFactor;
 
-      return (
-       <React.Fragment key={seat.id}>
-        <div
-         onClick={
-          Object.values(slot?.seats || {}).includes(seat.id) ? () => {} : () => toggleSeatSelection(seat.id)
-         }
-         className={cn(
-          "absolute rounded-full flex items-center justify-center transition-transform p-0",
-          Object.values(slot?.seats || {}).includes(seat.id) ? "" : "hover:scale-125",
-         )}
-         style={{
-          top: `${seatTop}px`,
-          left: `${seatLeft}px`,
-          width: `${seatWidth}px`,
-          height: `${seatHeight}px`,
-          backgroundColor: Object.values(slot?.seats || {}).includes(seat.id)
-           ? "gray"
-           : selectedSeats.includes(seat.id)
-           ? "#22c55e"
-           : seat.fill,
-          borderColor: Object.values(slot?.seats || {}).includes(seat.id)
-           ? "gray"
-           : selectedSeats.includes(seat.id)
-           ? "#15803d"
-           : seat.stroke,
-          borderStyle: Object.values(slot?.seats || {}).includes(seat.id)
-           ? "gray"
-           : selectedSeats.includes(seat.id)
-           ? "none"
-           : "solid",
-          borderWidth: `${seat.strokeWidth}px`,
-          cursor: Object.values(slot?.seats || {}).includes(seat.id) ? "not-allowed" : seat.cursor,
-         }}
-        >
-         {selectedSeats.includes(seat.id) && <Check className="text-white w-4 h-4 !border-none" />}
-         <Tooltip delayDuration={200}>
-          <TooltipTrigger
-           className="p-0 absolute border-none outline-none hover:border-none hover:outline-none bg-transparent"
-           style={{
-            width: `${seatWidth}px`,
-            height: `${seatHeight}px`,
-            transform: `scale(${seat.zoomX}, ${seat.zoomY})`,
-            borderWidth: `${seat.strokeWidth}px`,
-            cursor: Object.values(slot?.seats || {}).includes(seat.id) ? "not-allowed" : "pointer",
-           }}
-           type="button"
-          >
-           <TooltipContent>
-            <p>
-             {seat.ticketType}-{seat.number}
-            </p>
-           </TooltipContent>
-          </TooltipTrigger>
-         </Tooltip>
-        </div>
-       </React.Fragment>
-      );
-     })}
-    </div>
+     return (
+      <React.Fragment key={seat.id}>
+       <div
+        onClick={
+         Object.values(slot?.seats || {}).includes(seat.id) ? () => {} : () => toggleSeatSelection(seat.id)
+        }
+        className={cn(
+         "absolute rounded-full flex items-center justify-center transition-transform p-0",
+         Object.values(slot?.seats || {}).includes(seat.id) ? "" : "hover:scale-125",
+        )}
+        style={{
+         top: `${seatTop}px`,
+         left: `${seatLeft}px`,
+         width: `${seatWidth}px`,
+         height: `${seatHeight}px`,
+         backgroundColor: Object.values(slot?.seats || {}).includes(seat.id)
+          ? "gray"
+          : selectedSeats.includes(seat.id)
+          ? "#22c55e"
+          : seat.fill,
+         borderColor: Object.values(slot?.seats || {}).includes(seat.id)
+          ? "gray"
+          : selectedSeats.includes(seat.id)
+          ? "#15803d"
+          : seat.stroke,
+         borderStyle: Object.values(slot?.seats || {}).includes(seat.id)
+          ? "gray"
+          : selectedSeats.includes(seat.id)
+          ? "none"
+          : "solid",
+         borderWidth: `${seat.strokeWidth}px`,
+         cursor: Object.values(slot?.seats || {}).includes(seat.id) ? "not-allowed" : seat.cursor,
+        }}
+       >
+        {selectedSeats.includes(seat.id) && <Check className="text-white w-4 h-4 !border-none" />}
+        <Tooltip delayDuration={200}>
+         <TooltipTrigger
+          className="p-0 absolute border-none outline-none hover:border-none hover:outline-none bg-transparent"
+          style={{
+           width: `${seatWidth}px`,
+           height: `${seatHeight}px`,
+           transform: `scale(${seat.zoomX}, ${seat.zoomY})`,
+           borderWidth: `${seat.strokeWidth}px`,
+           cursor: Object.values(slot?.seats || {}).includes(seat.id) ? "not-allowed" : "pointer",
+          }}
+          type="button"
+         >
+          <TooltipContent>
+           <p>
+            {seat.ticketType}-{seat.number}
+           </p>
+          </TooltipContent>
+         </TooltipTrigger>
+        </Tooltip>
+       </div>
+      </React.Fragment>
+     );
+    })}
    </div>
-   <TicketPricingTable availableDays={availableDays} />
   </div>
  );
 };

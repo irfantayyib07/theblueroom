@@ -34,7 +34,7 @@ export const useOrder = (orderId?: number) => {
 };
 
 // Create Order
-export const useCreateOrder = () => {
+export const useCreateOrder = (successFn: () => void) => {
  const queryClient = useQueryClient();
 
  return useMutation<WooOrderResponse, unknown, WooOrderPayload>(
@@ -45,6 +45,7 @@ export const useCreateOrder = () => {
   {
    onSuccess: (data: WooOrderResponse) => {
     // Invalidate and refetch orders list
+    successFn();
     queryClient.invalidateQueries("woocommerce-orders");
     window.location.href = data?.payment_url;
    },
