@@ -93,7 +93,7 @@ const SeatPlan: React.FC<CanvasProps> = ({
     <p className="text-sm text-red-500 mt-2">{errors.seats.message}</p>
    )}
    <div
-    className="relative min-h-96 w-fit rounded-lg overflow-hidden"
+    className="relative min-h-96 w-fit rounded-lg"
     style={{
      width: `${responsiveWidth}px`,
      height: `${responsiveHeight}px`,
@@ -124,7 +124,7 @@ const SeatPlan: React.FC<CanvasProps> = ({
          Object.values(slot?.seats || {}).includes(seat.id) ? () => {} : () => toggleSeatSelection(seat.id)
         }
         className={cn(
-         "absolute rounded-full flex items-center justify-center transition-transform p-0",
+         "absolute rounded-full flex items-center justify-center transition-transform",
          Object.values(slot?.seats || {}).includes(seat.id) ? "" : "hover:scale-125",
         )}
         style={{
@@ -151,10 +151,10 @@ const SeatPlan: React.FC<CanvasProps> = ({
          cursor: Object.values(slot?.seats || {}).includes(seat.id) ? "not-allowed" : seat.cursor,
         }}
        >
-        {selectedSeats.includes(seat.id) && <Check className="text-white w-4 h-4 !border-none" />}
+        {selectedSeats.includes(seat.id) && <Check className="text-white w-3 h-3 !border-none" />}
         <Tooltip delayDuration={200}>
          <TooltipTrigger
-          className="p-0 absolute border-none outline-none hover:border-none hover:outline-none bg-transparent"
+          className="p-0 absolute inset-0 border-none outline-none hover:border-none hover:outline-none bg-transparent"
           style={{
            width: `${seatWidth}px`,
            height: `${seatHeight}px`,

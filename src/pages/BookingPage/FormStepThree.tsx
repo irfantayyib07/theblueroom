@@ -25,7 +25,7 @@ const FormStepThree = ({
   <>
    <FormItem>
     <FormLabel className="text-sm">
-     Name <span className="text-red-500">*</span>
+     Full name <span className="text-red-500">*</span>
     </FormLabel>
     <FormControl>
      <Input
@@ -40,12 +40,12 @@ const FormStepThree = ({
 
    <FormItem>
     <FormLabel className="text-sm">
-     Email <span className="text-red-500">*</span>
+     Email Address <span className="text-red-500">*</span>
     </FormLabel>
     <FormControl>
      <Input
       {...control.register("customerEmail")}
-      placeholder="Enter your e-mail"
+      placeholder="Enter your email address"
       className={errors.customerEmail ? "border-red-500" : ""}
       disabled={isBooking || isCreatingOrder}
      />
@@ -55,7 +55,7 @@ const FormStepThree = ({
 
    <FormItem>
     <FormLabel className="text-sm">
-     Phone <span className="text-red-500">*</span>
+     Phone Number <span className="text-red-500">*</span>
     </FormLabel>
     <FormControl>
      <Input
@@ -69,11 +69,11 @@ const FormStepThree = ({
    </FormItem>
 
    <FormItem>
-    <FormLabel className="text-sm">Description</FormLabel>
+    <FormLabel className="text-sm">Additional Notes</FormLabel>
     <FormControl>
      <Textarea
       {...control.register("description")}
-      placeholder="Please share anything that will help us prepare for the meeting"
+      placeholder="Please share any details that will help us prepare for your reservation, such as food allergies, etc."
       className={errors.description ? "border-red-500" : ""}
       disabled={isBooking || isCreatingOrder}
      />

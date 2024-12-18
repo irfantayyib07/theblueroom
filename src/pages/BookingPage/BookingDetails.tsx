@@ -1,30 +1,30 @@
 import { useFormContext } from "react-hook-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CalendarIcon, CheckCheck, DollarSign, MapPinIcon, TicketCheck } from "lucide-react";
+import { CalendarIcon, CheckCheck, MapPinIcon, TicketCheck } from "lucide-react";
 import type { BookingFormData } from "./Page";
 import { Separator } from "@/components/ui/separator";
 import { format, getDay } from "date-fns";
 import { Appointment } from "@/types/types";
 import { PRICING_DATA } from "@/data";
 
-const BookingDetails = ({ data }: { data: Appointment }) => {
+const BookingDetails = ({ data, currentStep }: { data: Appointment; currentStep: number }) => {
  const { watch } = useFormContext<BookingFormData>();
  const formData = watch();
 
  const renderDateTime = (): React.ReactNode => {
-  if (!formData.date) return;
-
-  const formattedDate = format(formData.date as Date, "dd MMMM yyyy"); // Example: "24 November 2024"
+  const formattedDate = formData.date ? format(formData.date as Date, "dd MMMM yyyy") : null; // Example: "24 November 2024"
 
   return (
    <div className="flex flex-col gap-4">
     <div className="flex items-start space-x-3">
      <CalendarIcon className="h-5 w-5 text-blue-600 mt-0.5" />
-     <div className="font-semibold">Today:</div>
+     <div className="font-semibold">Selected date/time:</div>
     </div>
-    <div>
-     {formattedDate} {formData.time ? formData.time : ""}
-    </div>
+    {formData.date && (
+     <div>
+      {formattedDate} {formData.time ? formData.time : ""}
+     </div>
+    )}
    </div>
   );
  };
@@ -38,7 +38,7 @@ const BookingDetails = ({ data }: { data: Appointment }) => {
    </CardHeader>
    <CardContent className="space-y-6">
     {/* Date and Time Section */}
-    {formData.date && renderDateTime()}
+    {renderDateTime()}
 
     <Separator />
 
@@ -62,48 +62,56 @@ const BookingDetails = ({ data }: { data: Appointment }) => {
     {/* <Separator /> */}
 
     {/* Selected Seats Section */}
-    <div>
-     <div className="flex items-start space-x-3">
-      <CheckCheck className="h-5 w-5 text-blue-600 mt-0.5" />
-      <div className="font-semibold">Selected Seats:</div>
-     </div>
-     <div className="mt-4 space-y-3">
-      {selectedSeats.length ? (
-       selectedSeats.map(seat => `${seat.ticketType}-${seat.number}`).join(", ")
-      ) : (
-       <span className="italic">None</span>
-      )}
-     </div>
-    </div>
+    {currentStep === 2 && (
+     <>
+      <div>
+       <div className="flex items-start space-x-3">
+        <CheckCheck className="h-5 w-5 text-blue-600 mt-0.5" />
+        <div className="font-semibold">Selected seats:</div>
+       </div>
+       <div className="mt-4 space-y-3">
+        {selectedSeats.length ? (
+         selectedSeats.map(seat => `${seat.ticketType}-${seat.number}`).join(", ")
+        ) : (
+         <span className="italic">None</span>
+        )}
+       </div>
+      </div>
+      <Separator />
+      {/* Ticket Quantity Section */}
+      <div>
+       <div className="flex items-start space-x-3">
+        <TicketCheck className="h-5 w-5 text-blue-600 mt-0.5" />
+        <div className="font-semibold">Number of guests: {formData?.seats?.length}</div>
+       </div>
+      </div>
+      <Separator />
+      {/* Total Price Section */}
+      <div>
+       <div className="flex items-center space-x-3">
+        <svg width="20" height="20" viewBox="0 0 22 16" fill="none">
+         <path
+          d="M5 6v4m12-4v4M1 4.2v7.6c0 1.12 0 1.68.218 2.108a2 2 0 0 0 .874.874C2.52 15 3.08 15 4.2 15h13.6c1.12 0 1.68 0 2.108-.218a2 2 0 0 0 .874-.874C21 13.48 21 12.92 21 11.8V4.2c0-1.12 0-1.68-.218-2.108a2 2 0 0 0-.874-.874C19.48 1 18.92 1 17.8 1H4.2c-1.12 0-1.68 0-2.108.218a2 2 0 0 0-.874.874C1 2.52 1 3.08 1 4.2M13.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0"
+          stroke="#3161F1"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+         />
+        </svg>
+        <div className="font-semibold">Total price:</div>
+       </div>
+       <div className="mt-4 space-y-3">
+        R
+        {selectedSeats.reduce(
+         (acc, seat): number => acc + PRICING_DATA[getDay(formData.date)][seat.ticketType],
+         0,
+        )}
+       </div>
+      </div>
 
-    <Separator />
-
-    {/* Ticket Quantity Section */}
-    <div>
-     <div className="flex items-start space-x-3">
-      <TicketCheck className="h-5 w-5 text-blue-600 mt-0.5" />
-      <div className="font-semibold">Ticket Quantity: {formData?.seats?.length}</div>
-     </div>
-    </div>
-
-    <Separator />
-
-    {/* Total Price Section */}
-    <div>
-     <div className="flex items-start space-x-3">
-      <DollarSign className="h-5 w-5 text-blue-600 mt-0.5" />
-      <div className="font-semibold">Total Price:</div>
-     </div>
-     <div className="mt-4 space-y-3">
-      R
-      {selectedSeats.reduce(
-       (acc, seat): number => acc + PRICING_DATA[getDay(formData.date)][seat.ticketType],
-       0,
-      )}
-     </div>
-    </div>
-
-    <Separator />
+      <Separator />
+     </>
+    )}
 
     {/* Location Section */}
     <div className="flex flex-col gap-4">
@@ -111,7 +119,7 @@ const BookingDetails = ({ data }: { data: Appointment }) => {
       <MapPinIcon className="h-5 w-5 text-blue-600 mt-0.5" />
       <div className="font-semibold">Location:</div>
      </div>
-     <div className="text-sm">{data?.locations?.[0].location}</div>
+     <div>{data?.locations?.[0].location}</div>
     </div>
    </CardContent>
   </Card>
