@@ -62,7 +62,7 @@ const BookingDetails = ({ data, currentStep }: { data: Appointment; currentStep:
     {/* <Separator /> */}
 
     {/* Selected Seats Section */}
-    {currentStep === 2 && (
+    {(currentStep === 2 || currentStep === 3) && (
      <>
       <div>
        <div className="flex items-start space-x-3">
