@@ -127,7 +127,7 @@ function BookingPage() {
 
  return (
   <FormProvider {...methods}>
-   <main className="flex flex-wrap gap-6 mx-auto max-w-5xl">
+   <main className="flex flex-col sm:flex-row gap-6 mx-auto max-w-5xl">
     <BookingDetails data={data?.data || ({} as Appointment)} currentStep={currentStep} />
     <Card className="w-full flex-[2]">
      <form onSubmit={methods.handleSubmit(onSubmit)}>

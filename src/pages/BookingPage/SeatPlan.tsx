@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { Seat, Slot } from "@/types/types";
@@ -50,7 +50,7 @@ const calculateResponsiveScaling = (
  if (windowWidth >= breakpoints.lg) return originalDimension * 0.9;
  if (windowWidth >= breakpoints.md) return originalDimension * 0.8;
  if (windowWidth >= breakpoints.sm) return originalDimension * 0.7;
- return originalDimension * 0.6;
+ return originalDimension * 0.9;
 };
 
 const SeatPlan: React.FC<CanvasProps> = ({
@@ -58,7 +58,7 @@ const SeatPlan: React.FC<CanvasProps> = ({
  slot,
  bgImage = "",
  canvasDimensions = { width: 0, height: 0 },
- negativeSizeFactor = 1.5,
+ negativeSizeFactor = 1.45,
 }) => {
  const {
   setValue,
@@ -67,15 +67,35 @@ const SeatPlan: React.FC<CanvasProps> = ({
  } = useFormContext<BookingFormData>();
  const selectedSeats = getValues("seats") || [];
  const windowSize = useWindowSize();
+ const containerRef = useRef<HTMLDivElement>(null);
+ const [containerWidth, setContainerWidth] = useState(0);
 
- const responsiveWidth = calculateResponsiveScaling(
-  canvasDimensions.width / negativeSizeFactor,
-  windowSize.width,
- );
- const responsiveHeight = calculateResponsiveScaling(
-  canvasDimensions.height / negativeSizeFactor,
-  windowSize.width,
- );
+ useEffect(() => {
+  const updateContainerWidth = () => {
+   if (containerRef.current && windowSize.width < 640) {
+    setContainerWidth(containerRef.current.offsetWidth);
+   }
+  };
+
+  updateContainerWidth();
+  window.addEventListener("resize", updateContainerWidth);
+
+  return () => window.removeEventListener("resize", updateContainerWidth);
+ }, [windowSize.width]);
+
+ let responsiveWidth: number;
+ let responsiveHeight: number;
+
+ if (windowSize.width < 500) {
+  responsiveWidth = containerWidth;
+  responsiveHeight = containerWidth * (canvasDimensions.height / canvasDimensions.width);
+ } else {
+  responsiveWidth = calculateResponsiveScaling(canvasDimensions.width / negativeSizeFactor, windowSize.width);
+  responsiveHeight = calculateResponsiveScaling(
+   canvasDimensions.height / negativeSizeFactor,
+   windowSize.width,
+  );
+ }
 
  const toggleSeatSelection = (seatId: number) => {
   const updatedSeats = selectedSeats.includes(seatId)
@@ -85,7 +105,7 @@ const SeatPlan: React.FC<CanvasProps> = ({
  };
 
  return (
-  <div className="space-y-2">
+  <div className="space-y-2" ref={containerRef}>
    <label className="text-sm">
     Select Seats <span className="text-red-500">*</span>
    </label>
@@ -93,7 +113,7 @@ const SeatPlan: React.FC<CanvasProps> = ({
     <p className="text-sm text-red-500 mt-2">{errors.seats.message}</p>
    )}
    <div
-    className="relative min-h-96 w-fit rounded-lg"
+    className={cn("relative min-h-96 rounded-lg", windowSize.width < 640 ? "w-full" : "w-fit")}
     style={{
      width: `${responsiveWidth}px`,
      height: `${responsiveHeight}px`,
@@ -151,7 +171,9 @@ const SeatPlan: React.FC<CanvasProps> = ({
          cursor: Object.values(slot?.seats || {}).includes(seat.id) ? "not-allowed" : seat.cursor,
         }}
        >
-        {selectedSeats.includes(seat.id) && <Check className="text-white w-3 h-3 !border-none" />}
+        {selectedSeats.includes(seat.id) && (
+         <Check className="text-white h-full !aspect-square !border-none" />
+        )}
         <Tooltip delayDuration={200}>
          <TooltipTrigger
           className="p-0 absolute inset-0 border-none outline-none hover:border-none hover:outline-none bg-transparent"
