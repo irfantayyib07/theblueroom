@@ -20,10 +20,12 @@ const BookingDetails = ({ data, currentStep }: { data: Appointment; currentStep:
      <CalendarIcon className="h-5 w-5 text-blue-600 mt-0.5" />
      <div className="font-semibold">Selected date/time:</div>
     </div>
-    {formData.date && (
+    {formData.date ? (
      <div>
       {formattedDate} {formData.time ? formData.time : ""}
      </div>
+    ) : (
+     <div>None</div>
     )}
    </div>
   );
@@ -73,7 +75,7 @@ const BookingDetails = ({ data, currentStep }: { data: Appointment; currentStep:
         {selectedSeats.length ? (
          selectedSeats.map(seat => `${seat.ticketType}-${seat.number}`).join(", ")
         ) : (
-         <span className="italic">None</span>
+         <span>None</span>
         )}
        </div>
       </div>

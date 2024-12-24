@@ -40,7 +40,7 @@ const FormStepThree = ({
 
    <FormItem>
     <FormLabel className="text-sm">
-     Email Address <span className="text-red-500">*</span>
+     Email address <span className="text-red-500">*</span>
     </FormLabel>
     <FormControl>
      <Input
@@ -55,7 +55,7 @@ const FormStepThree = ({
 
    <FormItem>
     <FormLabel className="text-sm">
-     Phone Number <span className="text-red-500">*</span>
+     Phone number <span className="text-red-500">*</span>
     </FormLabel>
     <FormControl>
      <Input
@@ -69,7 +69,7 @@ const FormStepThree = ({
    </FormItem>
 
    <FormItem>
-    <FormLabel className="text-sm">Additional Notes</FormLabel>
+    <FormLabel className="text-sm">Additional notes</FormLabel>
     <FormControl>
      <Textarea
       {...control.register("description")}
@@ -88,7 +88,7 @@ const FormStepThree = ({
      className="px-8 py-2 font-semibold"
      disabled={isBooking || isCreatingOrder}
     >
-     Go Back
+     Go back
     </Button>
     <Button type="submit" className="px-8 py-2 font-semibold" disabled={isBooking || isCreatingOrder}>
      {isBooking ? (
@@ -100,7 +100,7 @@ const FormStepThree = ({
        <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Placing Your Order...
       </>
      ) : (
-      "Create Booking"
+      "Create booking"
      )}
     </Button>
    </div>

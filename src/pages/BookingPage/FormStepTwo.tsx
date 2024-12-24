@@ -28,7 +28,7 @@ const FormStepTwo = ({
    />
    <div className="ml-auto flex flex-wrap gap-4">
     <Button type="button" variant="outline" onClick={prevStep} className="px-8 py-2 font-semibold">
-     Go Back
+     Go back
     </Button>
     <Button
      type="button"

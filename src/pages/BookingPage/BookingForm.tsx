@@ -257,7 +257,7 @@ const BookingForm = ({ data }: { data: Appointment }) => {
         <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Processing...
        </>
       ) : (
-       "Create Booking"
+       "Create booking"
       )}
      </Button>
     </CardContent>
