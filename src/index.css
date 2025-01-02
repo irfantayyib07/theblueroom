@@ -58,6 +58,16 @@
  }
 }
 
+body {
+ min-height: 100vh;
+ display: flex;
+ flex-direction: column;
+ font-family: "Libre Franklin", sans-serif;
+}
+
 #root {
  width: 100%;
+ display: flex;
+ flex-direction: column;
+ flex: 1 1 auto;
 }

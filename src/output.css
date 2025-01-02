@@ -712,8 +712,17 @@ body {
   margin-bottom: 0.25rem;
 }
 
+.my-6 {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
 .mb-4 {
   margin-bottom: 1rem;
+}
+
+.mb-8 {
+  margin-bottom: 2rem;
 }
 
 .ml-0 {
@@ -742,6 +751,10 @@ body {
 
 .mt-4 {
   margin-top: 1rem;
+}
+
+.mt-6 {
+  margin-top: 1.5rem;
 }
 
 .mt-auto {
@@ -898,6 +911,10 @@ body {
 
 .w-4 {
   width: 1rem;
+}
+
+.w-44 {
+  width: 11rem;
 }
 
 .w-5 {
@@ -1485,6 +1502,10 @@ body {
   padding-bottom: 0.5rem;
 }
 
+.pb-6 {
+  padding-bottom: 1.5rem;
+}
+
 .pl-3 {
   padding-left: 0.75rem;
 }
@@ -1532,6 +1553,10 @@ body {
 
 .text-\[0\.8rem\] {
   font-size: 0.8rem;
+}
+
+.text-\[15px\] {
+  font-size: 15px;
 }
 
 .text-base {
@@ -1791,8 +1816,18 @@ body {
   flex: 1 1 auto;
 }
 
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: "Libre Franklin", sans-serif;
+}
+
 #root {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
 }
 
 .file\:border-0::file-selector-button {
