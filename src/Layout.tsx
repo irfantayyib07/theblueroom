@@ -10,7 +10,7 @@ function RootLayout() {
     <Outlet />
    </section>
    <footer className="pb-6 flex gap-2 justify-center items-center text-[15px] mt-auto">
-    Powered by <img src="@/../public/images/otbb-logo.png" className="w-44" />
+    Powered by <img src="/images/otbb-logo.png" className="w-44" />
    </footer>
   </main>
  );
