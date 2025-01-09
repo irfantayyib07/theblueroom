@@ -103,6 +103,7 @@ const BookingDetails = ({ data, currentStep }: { data: Appointment; currentStep:
         <div className="font-semibold">Total price:</div>
        </div>
        <div className="mt-4 space-y-3">
+        R
         {selectedSeats.reduce(
          (acc, seat): number => acc + PRICING_DATA[getDay(formData.date)][seat.ticketType],
          0,
